@@ -11,7 +11,7 @@ screenGui.Parent = player.PlayerGui
 
 -- 3. Создаем само окно (Frame) - фон меню
 local mainFrame = Instance.new("Frame")
-mainFrame.Size = UDim2.new(0, 400, 0, 600) -- Ширина 200, высота 150 пикселей
+mainFrame.Size = UDim2.new(0, 600, 0, 400) -- Ширина 200, высота 150 пикселей
 mainFrame.Position = UDim2.new(0, 20, 0, 20) -- Отступ от левого верхнего угла (20, 20)
 mainFrame.BackgroundColor3 = Color3.fromRGB(30, 30, 30) -- Темно-серый цвет
 mainFrame.BorderSizePixel = 2
