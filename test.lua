@@ -10,5 +10,5 @@ game:GetService("StarterGui"):SetCore("SendNotification", {
 -- Давай сделаем что-то интересное: заставим твоего персонажа подпрыгнуть
 local player = game.Players.LocalPlayer
 if player.Character and player.Character:FindFirstChild("HumanoidRootPart") then
-    player.Character.HumanoidRootPart.Velocity = Vector3.new(0, 100, 0)
+    player.Character.HumanoidRootPart.Velocity = Vector3.new(0, 200, 0)
 end
