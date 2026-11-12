@@ -1,126 +1,136 @@
+-- ============================================
+-- СКЕЛЕТ BSS ХАБА (для обучения)
+-- ============================================
 local Players = game:GetService("Players")
 local player = Players.LocalPlayer
+local ReplicatedStorage = game:GetService("ReplicatedStorage")
 
-local oldGui = player.PlayerGui:FindFirstChild("MyCheatMenu")
-if oldGui then oldGui:Destroy() end
+-- Удаляем старое меню, если есть
+if player.PlayerGui:FindFirstChild("BSS_TestHub") then
+    player.PlayerGui.BSS_TestHub:Destroy()
+end
 
+-- 1. Главный контейнер
 local screenGui = Instance.new("ScreenGui")
-screenGui.Name = "MyCheatMenu"
+screenGui.Name = "BSS_TestHub"
 screenGui.ResetOnSpawn = false
 screenGui.Parent = player.PlayerGui
 
--- 3. Создаем само окно (Frame) - фон меню
+-- 2. Окно меню
 local mainFrame = Instance.new("Frame")
-mainFrame.Size = UDim2.new(0, 600, 0, 400) -- Ширина 200, высота 150 пикселей
-mainFrame.Position = UDim2.new(0, 20, 0, 20) -- Отступ от левого верхнего угла (20, 20)
-mainFrame.BackgroundColor3 = Color3.fromRGB(30, 30, 30) -- Темно-серый цвет
+mainFrame.Size = UDim2.new(0, 500, 0, 350)
+mainFrame.Position = UDim2.new(0, 50, 0, 50)
+mainFrame.BackgroundColor3 = Color3.fromRGB(25, 25, 25)
 mainFrame.BorderSizePixel = 2
-mainFrame.BorderColor3 = Color3.fromRGB(255, 255, 255) -- Белая рамка
-mainFrame.Active = true -- Позволяет перетаскивать окно мышкой
-mainFrame.Draggable = true 
+mainFrame.BorderColor3 = Color3.fromRGB(255, 200, 0) -- Желтый, под пчел
+mainFrame.Active = true
+mainFrame.Draggable = true
 mainFrame.Parent = screenGui
 
--- 4. Добавляем заголовок
+-- 3. Заголовок
 local title = Instance.new("TextLabel")
-title.Size = UDim2.new(1, 0, 0, 30) -- Ширина 100%, высота 30
-title.BackgroundTransparency = 1 -- Прозрачный фон
-title.Text = "Меню 1.1"
-title.TextColor3 = Color3.fromRGB(255, 255, 255)
+title.Size = UDim2.new(1, 0, 0, 30)
+title.BackgroundTransparency = 1
+title.Text = "BSS Test Hub (Учебный)"
+title.TextColor3 = Color3.fromRGB(255, 200, 0)
 title.Font = Enum.Font.SourceSansBold
 title.TextSize = 20
 title.Parent = mainFrame
 
--- 5. Создаем кнопку для включения/выключения функции
-local speedButton = Instance.new("TextButton")
-speedButton.Size = UDim2.new(1, -20, 0, 40) -- Ширина на весь экран минус отступы, высота 40
-speedButton.Position = UDim2.new(0, 10, 0, 50) -- Чуть ниже заголовка
-speedButton.BackgroundColor3 = Color3.fromRGB(200, 50, 50) -- Красный цвет (выключено)
-speedButton.Text = "Супер-скорость: ВЫКЛ"
-speedButton.TextColor3 = Color3.fromRGB(255, 255, 255)
-speedButton.Font = Enum.Font.SourceSans
-speedButton.TextSize = 16
-speedButton.Parent = mainFrame
+-- 4. Левая панель (Sidebar)
+local sidebar = Instance.new("Frame")
+sidebar.Size = UDim2.new(0, 120, 1, -30)
+sidebar.Position = UDim2.new(0, 0, 0, 30)
+sidebar.BackgroundColor3 = Color3.fromRGB(15, 15, 15)
+sidebar.Parent = mainFrame
 
--- 6. Логика работы кнопки
-local speedEnabled = false -- Флаг состояния (по умолчанию выключено)
+local sidebarLayout = Instance.new("UIListLayout")
+sidebarLayout.FillDirection = Enum.FillDirection.Vertical
+sidebarLayout.HorizontalAlignment = Enum.HorizontalAlignment.Center
+sidebarLayout.Padding = UDim.new(0, 8)
+sidebarLayout.Parent = sidebar
 
-speedButton.MouseButton1Click:Connect(function()
-    speedEnabled = not speedEnabled -- Переключаем флаг (было false, станет true)
-    
-    local humanoid = player.Character and player.Character:FindFirstChild("Humanoid")
-    
-    if speedEnabled then
-        -- Включаем
-        speedButton.Text = "Супер-скорость: ВКЛ"
-        speedButton.BackgroundColor3 = Color3.fromRGB(50, 200, 50) -- Зеленый
-        if humanoid then humanoid.WalkSpeed = 100 end
-    else
-        -- Выключаем
-        speedButton.Text = "Супер-скорость: ВЫКЛ"
-        speedButton.BackgroundColor3 = Color3.fromRGB(200, 50, 50) -- Красный
-        if humanoid then humanoid.WalkSpeed = 16 end -- Возвращаем обычную скорость
+-- 5. Кнопки вкладок
+local function createTabButton(name, order)
+    local btn = Instance.new("TextButton")
+    btn.Size = UDim2.new(0.9, 0, 0, 30)
+    btn.Text = name
+    btn.BackgroundColor3 = Color3.fromRGB(50, 50, 50)
+    btn.TextColor3 = Color3.fromRGB(255, 255, 255)
+    btn.LayoutOrder = order
+    btn.Parent = sidebar
+    return btn
+end
+
+local tabMainBtn = createTabButton("Главное", 1)
+local tabFarmBtn = createTabButton("Фарм", 2)
+
+-- 6. Страницы (Pages)
+local function createPage()
+    local page = Instance.new("Frame")
+    page.Size = UDim2.new(1, -130, 1, -40)
+    page.Position = UDim2.new(0, 125, 0, 35)
+    page.BackgroundTransparency = 1
+    page.Visible = false
+    page.Parent = mainFrame
+    return page
+end
+
+local pageMain = createPage()
+local pageFarm = createPage()
+
+-- 7. Контент для "Главное"
+local tpButton = Instance.new("TextButton")
+tpButton.Size = UDim2.new(1, -20, 0, 40)
+tpButton.Position = UDim2.new(0, 10, 0, 10)
+tpButton.BackgroundColor3 = Color3.fromRGB(200, 150, 0)
+tpButton.Text = "Телепорт к Улью"
+tpButton.TextColor3 = Color3.fromRGB(0, 0, 0)
+tpButton.Font = Enum.Font.SourceSansBold
+tpButton.Parent = pageMain
+
+tpButton.MouseButton1Click:Connect(function()
+    local char = player.Character
+    if char and char:FindFirstChild("HumanoidRootPart") then
+        -- Просто телепортируем в координаты спавна (примерные, могут отличаться)
+        char.HumanoidRootPart.CFrame = CFrame.new(0, 10, 0)
+        print("Телепорт выполнен (примерно)")
     end
 end)
 
-local sidebar = Instance.new("Frame")
-sidebar.Size = UDim2.new(0, 100, 1, 0)
-sidebar.Position = UDim2.new(0, 0, 0, 0)
-sidebar.BackgroundColor3 = Color3.fromRGB(20, 20, 20)
-sidebar.BorderSizePixel = 1 
-sidebar.BorderColor3 = Color3.fromRGB(60, 60, 60)
-sidebar.Parent = mainFrame
+-- 8. Контент для "Фарм"
+local convertButton = Instance.new("TextButton")
+convertButton.Size = UDim2.new(1, -20, 0, 40)
+convertButton.Position = UDim2.new(0, 10, 0, 10)
+convertButton.BackgroundColor3 = Color3.fromRGB(0, 150, 200)
+convertButton.Text = "Превратить пыльцу в мёд (FireServer)"
+convertButton.TextColor3 = Color3.fromRGB(255, 255, 255)
+convertButton.Parent = pageFarm
 
-
--- Выравнивание кнопок в столбик
-local sidebarLayout = Instance.new("UIListLayout")
-sidebarLayout.FillDirection = Enum.FillDirection.Vertical -- Вертикально
-sidebarLayout.HorizontalAlignment = Enum.HorizontalAlignment.Center -- По центру панели
-sidebarLayout.Padding = UDim.new(0, 10) -- Отступ 10 пикселей между кнопками
-sidebarLayout.Parent = sidebar
-
--- Кнопка вкладки 1
-local tab1Button = Instance.new("TextButton")
-tab1Button.Size = UDim2.new(0.9, 0, 0, 30) -- Ширина 90% от панели, высота 30
-tab1Button.Text = "Движение"
-tab1Button.BackgroundColor3 = Color3.fromRGB(50, 150, 50) -- Активный цвет
-tab1Button.Parent = sidebar
-
--- Кнопка вкладки 2
-local tab2Button = Instance.new("TextButton")
-tab2Button.Size = UDim2.new(0.9, 0, 0, 30)
-tab2Button.Text = "Визуал"
-tab2Button.BackgroundColor3 = Color3.fromRGB(40, 40, 40) -- Неактивный цвет
-tab2Button.Parent = sidebar
-
--- Страница 1
-local page1 = Instance.new("Frame")
-page1.Size = UDim2.new(1, -110, 1, -10) -- Ширина: 100% минус 110 (100 левая панель + 10 отступ), Высота: 100% минус 10
-page1.Position = UDim2.new(0, 105, 0, 5) -- Сдвиг вправо на 105 пикселей
-page1.BackgroundTransparency = 1
-page1.Visible = true
-page1.Parent = mainFrame
-
--- Страница 2
-local page2 = Instance.new("Frame")
-page2.Size = UDim2.new(1, -110, 1, -10)
-page2.Position = UDim2.new(0, 105, 0, 5) -- Точная копия позиции
-page2.BackgroundTransparency = 1
-page2.Visible = false
-page2.Parent = mainFrame
-
-local function switchTab(tabNumber)
-    if tabNumber == 1 then
-        page1.Visible = true
-        page2.Visible = false
-        tab1Button.BackgroundColor3 = Color3.fromRGB(50, 150, 50) -- Зеленый
-        tab2Button.BackgroundColor3 = Color3.fromRGB(40, 40, 40)  -- Серый
-    elseif tabNumber == 2 then
-        page1.Visible = false
-        page2.Visible = true
-        tab1Button.BackgroundColor3 = Color3.fromRGB(40, 40, 40)
-        tab2Button.BackgroundColor3 = Color3.fromRGB(50, 150, 50)
+convertButton.MouseButton1Click:Connect(function()
+    -- В BSS это событие вызывается, когда игрок нажимает кнопку в улье 
+    local events = ReplicatedStorage:FindFirstChild("Events")
+    if events and events:FindFirstChild("PlayerHiveCommand") then
+        events.PlayerHiveCommand:FireServer("ToggleHoneyMaking")
+        print("Отправлен запрос на превращение пыльцы")
+    else
+        warn("Событие PlayerHiveCommand не найдено!")
     end
+end)
+
+-- 9. Переключение вкладок
+local function switchTab(pageToShow, btnToHighlight)
+    pageMain.Visible = false
+    pageFarm.Visible = false
+    pageToShow.Visible = true
+    
+    tabMainBtn.BackgroundColor3 = Color3.fromRGB(50, 50, 50)
+    tabFarmBtn.BackgroundColor3 = Color3.fromRGB(50, 50, 50)
+    btnToHighlight.BackgroundColor3 = Color3.fromRGB(200, 150, 0)
 end
 
-tab1Button.MouseButton1Click:Connect(function() switchTab(1) end)
-tab2Button.MouseButton1Click:Connect(function() switchTab(2) end)
+tabMainBtn.MouseButton1Click:Connect(function() switchTab(pageMain, tabMainBtn) end)
+tabFarmBtn.MouseButton1Click:Connect(function() switchTab(pageFarm, tabFarmBtn) end)
+
+-- Показываем первую вкладку по умолчанию
+switchTab(pageMain, tabMainBtn)
