@@ -61,3 +61,11 @@ speedButton.MouseButton1Click:Connect(function()
         if humanoid then humanoid.WalkSpeed = 16 end -- Возвращаем обычную скорость
     end
 end)
+
+local sidebar = Instance.new("Frame")
+sidebar.Size = UDim2.new(0, 100, 1, 0)
+sidebar.Position = UDim2(0, 0, 0, 0)
+sidebar.BackgroundColor3 = Color3.fromRGB(20, 20, 20)
+sidebar.BorderSizePixel = 1 
+sidebar.BorderColor3 = Color3.fromRGB(60, 60, 60)
+sidebar.Parent = mainFrame
