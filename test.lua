@@ -1,20 +1,17 @@
--- 1. Подготовка
 local Players = game:GetService("Players")
 local player = Players.LocalPlayer
 
--- Удаляем старое меню, если оно было (чтобы не дублировалось)
 local oldGui = player.PlayerGui:FindFirstChild("MyCheatMenu")
 if oldGui then oldGui:Destroy() end
 
--- 2. Создаем главный контейнер (ScreenGui) - это папка для нашего интерфейса
 local screenGui = Instance.new("ScreenGui")
 screenGui.Name = "MyCheatMenu"
-screenGui.ResetOnSpawn = false -- Меню не исчезнет после смерти персонажа
+screenGui.ResetOnSpawn = false
 screenGui.Parent = player.PlayerGui
 
 -- 3. Создаем само окно (Frame) - фон меню
 local mainFrame = Instance.new("Frame")
-mainFrame.Size = UDim2.new(0, 200, 0, 150) -- Ширина 200, высота 150 пикселей
+mainFrame.Size = UDim2.new(0, 400, 0, 600) -- Ширина 200, высота 150 пикселей
 mainFrame.Position = UDim2.new(0, 20, 0, 20) -- Отступ от левого верхнего угла (20, 20)
 mainFrame.BackgroundColor3 = Color3.fromRGB(30, 30, 30) -- Темно-серый цвет
 mainFrame.BorderSizePixel = 2
@@ -27,7 +24,7 @@ mainFrame.Parent = screenGui
 local title = Instance.new("TextLabel")
 title.Size = UDim2.new(1, 0, 0, 30) -- Ширина 100%, высота 30
 title.BackgroundTransparency = 1 -- Прозрачный фон
-title.Text = "Моё Меню"
+title.Text = "Меню"
 title.TextColor3 = Color3.fromRGB(255, 255, 255)
 title.Font = Enum.Font.SourceSansBold
 title.TextSize = 20
