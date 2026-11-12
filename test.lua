@@ -3,7 +3,7 @@
 game:GetService("StarterGui"):SetCore("SendNotification", {
     Title = "Мой тест",
     Text = "Скрипт с GitHub работает!",
-    Duration = 10
+    Duration = 10,
     Icon = "rbxassetid://1234567890"
 })
 
